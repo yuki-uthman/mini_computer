@@ -82,10 +82,46 @@ RSpec.describe "Stack class" do
   describe "#view" do
     context "when not empty" do
       it "prints the values on the stack" do
+        @stack.push 1
+        @stack.push 2
+        @stack.push 3
+        expected = <<~OUTPUT
+          ┌───────┐
+          │ Stack │
+          ├───────┤
+          │   3   │
+          │   2   │
+          │   1   │
+          └───────┘
+        OUTPUT
+        expect { @stack.view }.to output(expected).to_stdout
+
+        @stack.pop
+        expected = <<~OUTPUT
+          ┌───────┐
+          │ Stack │
+          ├───────┤
+          │   2   │
+          │   1   │
+          └───────┘
+        OUTPUT
+        expect { @stack.view }.to output(expected).to_stdout
+      end
+
+      it "can print with custom header" do
+        stack = Stack.new "Reg"
         stack.push 1
         stack.push 2
         stack.push 3
-        expected = "1 2 3"
+        expected = <<~OUTPUT
+          ┌─────┐
+          │ Reg │
+          ├─────┤
+          │  3  │
+          │  2  │
+          │  1  │
+          └─────┘
+        OUTPUT
         expect { stack.view }.to output(expected).to_stdout
       end
     end

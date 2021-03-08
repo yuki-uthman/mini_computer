@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "tty-table"
+
 class StackEmptyError < StandardError
 end
 
@@ -32,6 +34,11 @@ class Stack
   end
 
   def view
-    renderer = TTY::Table::Renderer::Unicode.new(table)
+    formatted = []
+    @stack.reverse_each do |value|
+      formatted << [value]
+    end
+    table = TTY::Table.new [@title], formatted
+    puts table.render(:unicode, alignment: [:center], padding: [0, 1, 0, 1])
   end
 end
