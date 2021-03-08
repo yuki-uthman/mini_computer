@@ -35,6 +35,10 @@ class Stack
     @stack.empty?
   end
 
+  def to_a
+    @stack
+  end
+
   def view
     formatted = []
     @stack.reverse_each do |value|
