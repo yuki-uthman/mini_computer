@@ -38,6 +38,10 @@ Naming/BinaryOperatorParameterName:
 Style/AsciiComments:
   Enabled: false
 
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - "spec/**/*"
+
 Style/LambdaCall:
   SupportedStyles:
   - call
