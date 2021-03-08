@@ -39,9 +39,10 @@ RSpec.describe "Stack class" do
           expect(@stack.pop).to eq(i)
         end
       end
-
-      it "raises StackEmptyError when empty" do
-        expect { @stack.pop }.to raise_error(StackEmptyError)
+      context "when empty" do
+        it "raises StackEmptyError" do
+          expect { @stack.pop }.to raise_error(StackEmptyError)
+        end
       end
     end
   end
