@@ -5,6 +5,15 @@ RSpec.describe "Stack class" do
     @stack = Stack.new
   end
 
+  describe "#initialize" do
+    it "can accept initial stack" do
+      stack = Stack.new stack: [1, 2, 3]
+      actual = stack
+      expected = [1, 2, 3]
+      expect(actual).to eq expected
+    end
+  end
+
   describe "#header" do
     context "when not specified" do
       it 'returns "Stack"' do
@@ -16,7 +25,7 @@ RSpec.describe "Stack class" do
     context "when specified" do
       it "returns the header" do
         header = "Register"
-        stack_with_header = Stack.new header
+        stack_with_header = Stack.new(header: header)
         actual = stack_with_header.header
         expect(actual).to eq header
       end
@@ -128,7 +137,7 @@ RSpec.describe "Stack class" do
       end
 
       it "can print with custom header" do
-        stack = Stack.new "Reg"
+        stack = Stack.new header: "Reg"
         stack.push 1
         stack.push 2
         stack.push 3

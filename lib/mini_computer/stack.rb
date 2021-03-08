@@ -8,9 +8,9 @@ end
 class Stack
   attr_reader :header
 
-  def initialize(header = "Stack")
+  def initialize(header: "Stack", stack: [])
     @header = header
-    @stack ||= []
+    @stack = stack
   end
 
   def ==(other)
