@@ -3,8 +3,9 @@
 class StackEmptyError < StandardError
 end
 
-module Stack
-  def initialize
+class Stack
+  def initialize(title = "Stack")
+    @title = title
     @stack ||= []
   end
 
