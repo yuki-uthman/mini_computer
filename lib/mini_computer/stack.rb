@@ -6,8 +6,10 @@ class StackEmptyError < StandardError
 end
 
 class Stack
-  def initialize(title = "Stack")
-    @title = title
+  attr_reader :header
+
+  def initialize(header = "Stack")
+    @header = header
     @stack ||= []
   end
 
@@ -38,7 +40,7 @@ class Stack
     @stack.reverse_each do |value|
       formatted << [value]
     end
-    table = TTY::Table.new [@title], formatted
+    table = TTY::Table.new [header], formatted
     puts table.render(:unicode, alignment: [:center], padding: [0, 1, 0, 1])
   end
 end

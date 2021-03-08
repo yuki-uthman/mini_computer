@@ -5,6 +5,24 @@ RSpec.describe "Stack class" do
     @stack = Stack.new
   end
 
+  describe "#header" do
+    context "when not specified" do
+      it 'returns "Stack"' do
+        actual = @stack.header
+        expected = "Stack"
+        expect(actual).to eq expected
+      end
+    end
+    context "when specified" do
+      it "returns the header" do
+        header = "Register"
+        stack_with_header = Stack.new header
+        actual = stack_with_header.header
+        expect(actual).to eq header
+      end
+    end
+  end
+
   describe "#push" do
     context "given 1" do
       it "pushes 1 onto the stack" do
