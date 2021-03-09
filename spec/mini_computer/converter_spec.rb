@@ -6,6 +6,39 @@ RSpec.describe "Converter class" do
     @converter = Converter.new
   end
 
+  describe "#back" do
+    context "when there are previous states" do
+      it "restores the previous state" do
+        @converter.add input: [1, 2, 3]
+        expect(@converter.state).to eq [[1, 2, 3], [], []]
+
+        @converter.next
+        expect(@converter.state).to eq [[1, 2], [3], []]
+
+        @converter.back
+        expect(@converter.state).to eq [[1, 2, 3], [], []]
+      end
+
+      it "returns true" do
+        @converter.add input: [1, 2, 3]
+        @converter.next
+        expect(@converter.back).to eq true
+      end
+    end
+
+    context "when there is no previous state" do
+      it "keeps the same state" do
+        @converter.add input: [1, 2, 3]
+        @converter.back
+        expect(@converter.state).to eq [[1, 2, 3], [], []]
+      end
+
+      it "returns false" do
+        expect(@converter.back).to eq false
+      end
+    end
+  end
+
   describe "#next" do
     context "when the input stack becomes empty" do
       it "should handle StackEmptyError by returning false" do

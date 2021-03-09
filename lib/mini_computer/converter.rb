@@ -10,6 +10,7 @@ class Converter
     @input = Stack.new header: "Input"
     @output = Stack.new header: "Output"
     @ops = Stack.new header: "Ops"
+    @history = Stack.new header: "History", stack: []
   end
 
   def add(input:)
@@ -25,12 +26,13 @@ class Converter
   end
 
   def state
-    [@input, @output, @ops]
+    [@input.stack.clone, @output.stack.clone, @ops.stack.clone]
   end
 
   def next
     return false if @input.empty? && @ops.empty?
 
+    save
     if !@input.empty?
       case @input.peek
       when Integer
@@ -44,6 +46,15 @@ class Converter
     true
   end
 
+  def back
+    if @history.empty?
+      false
+    else
+      self.state = @history.pop
+      true
+    end
+  end
+
   private
 
   def push_ops
@@ -53,5 +64,9 @@ class Converter
       @output.push @ops.pop until Operator.compare(@input.peek, @ops.peek) == 1
     end
     @ops.push @input.pop
+  end
+
+  def save
+    @history.push state
   end
 end
