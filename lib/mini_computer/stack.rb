@@ -27,6 +27,14 @@ class Stack
     @stack.pop
   end
 
+  def set(stack)
+    @stack = stack
+  end
+
+  def peek
+    @stack.last
+  end
+
   def size
     @stack.size
   end

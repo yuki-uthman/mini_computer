@@ -74,6 +74,36 @@ RSpec.describe "Stack class" do
     end
   end
 
+  describe "#set" do
+    it "sets the stack to the new one" do
+      @stack.push 1
+      @stack.push 2
+      @stack.push 3
+      expect(@stack).to eq [1, 2, 3]
+
+      @stack.set [7, 8, 9]
+      expect(@stack).to eq [7, 8, 9]
+    end
+  end
+
+  describe "#peek" do
+    context "when it is not empty" do
+      it "returns the value without popping the value" do
+        @stack.push 1
+        @stack.push 2
+        expected = 2
+        expect(@stack.peek).to eq expected
+        expected = [1, 2]
+        expect(@stack).to eq expected
+      end
+    end
+    context "when empty" do
+      it "returns nil" do
+        expect(@stack.peek).to eq nil
+      end
+    end
+  end
+
   describe "#size" do
     context "when not empty" do
       it "returns the size of the stack" do
