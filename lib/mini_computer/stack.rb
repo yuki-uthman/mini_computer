@@ -6,7 +6,7 @@ class StackEmptyError < StandardError
 end
 
 class Stack
-  attr_reader :header
+  attr_reader :header, :stack
 
   def initialize(header: "Stack", stack: [])
     @header = header
