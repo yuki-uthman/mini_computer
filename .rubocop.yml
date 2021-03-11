@@ -1,4 +1,6 @@
-# inherit_from: .rubocop_todo.yml
+inherit_from: .rubocop_todo.yml
+
+require: rubocop-rspec
 
 AllCops:
   NewCops: disable
@@ -62,3 +64,18 @@ Style/CommentedKeyword:
 
 Style/SymbolArray:
   Enabled: false
+
+# RSpec
+RSpec/ExampleLength:
+  Exclude:
+    - 'spec/mini_computer/stack_table_spec.rb'
+    - 'spec/mini_computer/stack_spec.rb'
+
+Style/Documentation:
+  Exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
+
+RSpec/NestedGroups:
+  Max: 4
+

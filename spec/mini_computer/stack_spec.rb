@@ -1,105 +1,87 @@
 require_relative "../../lib/mini_computer/stack"
 
-RSpec.describe "Stack class" do
-  before do
-    @stack = Stack.new
-  end
+RSpec.describe Stack do
+  let(:empty_stack) { described_class.new }
+  let(:numbers_stack) { described_class.new with: [1, 2, 3] }
+  let(:reg_stack) { described_class.new header: "Reg" }
 
   describe "#initialize" do
-    it "can accept initial stack" do
-      stack = Stack.new stack: [1, 2, 3]
-      actual = stack
-      expected = [1, 2, 3]
-      expect(actual).to eq expected
-    end
-  end
-
-  describe "#header" do
-    context "when not specified" do
-      it 'returns "Stack"' do
-        actual = @stack.header
-        expected = "Stack"
-        expect(actual).to eq expected
+    context "when no header is given" do
+      it "default header is \"Stack\"" do
+        expect(empty_stack.header).to eq "Stack"
       end
     end
-    context "when specified" do
+
+    context "when header is given" do
       it "returns the header" do
-        header = "Register"
-        stack_with_header = Stack.new(header: header)
-        actual = stack_with_header.header
-        expect(actual).to eq header
+        expect(reg_stack.header).to eq "Reg"
+      end
+    end
+
+    context "when initial data is given" do
+      it "stores the data on the stack" do
+        expect(numbers_stack).to eq [1, 2, 3]
       end
     end
   end
 
   describe "#push" do
-    context "given 1" do
-      it "pushes 1 onto the stack" do
-        @stack.push 1
-        expect(@stack).to eq([1])
+    context "when pushed once" do
+      it "pushes it onto the stack" do
+        empty_stack.push 1
+        expect(empty_stack).to eq([1])
       end
     end
 
-    context "given 1 and then 2" do
-      it "pushes 1 and 2 onto the stack" do
-        @stack.push 1
-        @stack.push 2
-        expect(@stack).to eq([1, 2])
+    context "when pushed twice" do
+      it "pushes second value after the first" do
+        empty_stack.push 1
+        empty_stack.push 2
+        expect(empty_stack).to eq([1, 2])
       end
     end
   end
 
-  describe "pop" do
+  describe "#pop" do
     context "when it is not empty" do
       it "removes the last element from the stack" do
-        @stack.push 1
-        expect(@stack).to eq([1])
-        @stack.pop
-        expect(@stack).to eq([])
+        numbers_stack.pop
+        expect(numbers_stack).to eq([1, 2])
       end
 
       it "returns the popped element" do
-        (1..5).each do |i|
-          @stack.push i
-        end
-        5.downto(1) do |i|
-          expect(@stack.pop).to eq(i)
-        end
+        empty_stack.push 1
+        expect(empty_stack.pop).to eq 1
       end
-      context "when empty" do
-        it "raises StackEmptyError" do
-          expect { @stack.pop }.to raise_error(StackEmptyError)
-        end
+    end
+
+    context "when empty" do
+      it "raises StackEmptyError" do
+        expect { empty_stack.pop }.to raise_error(StackEmptyError)
       end
     end
   end
 
-  describe "#set" do
-    it "sets the stack to the new one" do
-      @stack.push 1
-      @stack.push 2
-      @stack.push 3
-      expect(@stack).to eq [1, 2, 3]
-
-      @stack.set [7, 8, 9]
-      expect(@stack).to eq [7, 8, 9]
+  describe "#set=" do
+    it "replaces the stack to the new one" do
+      numbers_stack.set = [7, 8, 9]
+      expect(numbers_stack).to eq [7, 8, 9]
     end
   end
 
   describe "#peek" do
     context "when it is not empty" do
       it "returns the value without popping the value" do
-        @stack.push 1
-        @stack.push 2
-        expected = 2
-        expect(@stack.peek).to eq expected
-        expected = [1, 2]
-        expect(@stack).to eq expected
+        empty_stack.push 1
+        empty_stack.peek
+        expect(empty_stack).to eq [1]
       end
     end
+
     context "when empty" do
       it "returns nil" do
-        expect(@stack.peek).to eq nil
+        numbers_stack.clear
+        expect(numbers_stack.peek).to eq nil
       end
     end
   end
@@ -107,17 +89,14 @@ RSpec.describe "Stack class" do
   describe "#size" do
     context "when not empty" do
       it "returns the size of the stack" do
-        @stack.push 1
-        @stack.push 2
-        @stack.push 3
-
-        expect(@stack.size).to eq(3)
+        expect(numbers_stack.size).to eq(3)
       end
+    end
 
-      context "when empty" do
-        it "returns 0" do
-          expect(@stack.size).to eq 0
-        end
+    context "when empty" do
+      it "returns 0" do
+        numbers_stack.clear
+        expect(numbers_stack.size).to eq 0
       end
     end
   end
@@ -125,24 +104,20 @@ RSpec.describe "Stack class" do
   describe "#empty?" do
     context "when not empty" do
       it "returns false" do
-        @stack.push 1
-        expect(@stack.empty?).to eq false
+        expect(numbers_stack.empty?).to eq false
       end
     end
 
     context "when empty" do
       it "returns true" do
-        expect(@stack.empty?).to eq true
+        expect(empty_stack.empty?).to eq true
       end
     end
   end
 
   describe "#view" do
-    context "when not empty" do
-      it "prints the values on the stack" do
-        @stack.push 1
-        @stack.push 2
-        @stack.push 3
+    context "with default stack header" do
+      it "prints the table header with Stack" do
         expected = <<~OUTPUT
           ┌───────┐
           │ Stack │
@@ -152,25 +127,13 @@ RSpec.describe "Stack class" do
           │   1   │
           └───────┘
         OUTPUT
-        expect { @stack.view }.to output(expected).to_stdout
-
-        @stack.pop
-        expected = <<~OUTPUT
-          ┌───────┐
-          │ Stack │
-          ├───────┤
-          │   2   │
-          │   1   │
-          └───────┘
-        OUTPUT
-        expect { @stack.view }.to output(expected).to_stdout
+        expect { numbers_stack.view }.to output(expected).to_stdout
       end
+    end
 
-      it "can print with custom header" do
-        stack = Stack.new header: "Reg"
-        stack.push 1
-        stack.push 2
-        stack.push 3
+    context "with custom stack header" do
+      it "print the table header with custom stack header" do
+        reg_stack.set = [1, 2, 3]
         expected = <<~OUTPUT
           ┌─────┐
           │ Reg │
@@ -180,7 +143,7 @@ RSpec.describe "Stack class" do
           │  1  │
           └─────┘
         OUTPUT
-        expect { stack.view }.to output(expected).to_stdout
+        expect { reg_stack.view }.to output(expected).to_stdout
       end
     end
   end

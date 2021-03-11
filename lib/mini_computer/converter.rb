@@ -3,30 +3,37 @@
 require_relative "stack"
 require_relative "operator"
 
+# This class converts infix to postfix one step at a time
 class Converter
-  attr_reader :output
+  attr_reader :input, :output, :ops
 
-  def initialize
-    @input = Stack.new header: "Input"
+  def initialize(input = [])
+    @input = Stack.new header: "Input", with: input
     @output = Stack.new header: "Output"
     @ops = Stack.new header: "Ops"
-    @history = Stack.new header: "History", stack: []
+    @history = Stack.new header: "History"
   end
 
-  def add(input:)
-    @input.set input
-    @output.set []
-    @ops.set []
+  def input=(input)
+    reset
+    @input.set = input
+  end
+
+  def reset
+    @input.set = []
+    @output.set = []
+    @ops.set = []
+    @history.set = []
   end
 
   def state=(arr)
-    @input.set arr[0]
-    @output.set arr[1]
-    @ops.set arr[2]
+    @input.set = arr[0]
+    @output.set = arr[1]
+    @ops.set = arr[2]
   end
 
   def state
-    [@input.stack.clone, @output.stack.clone, @ops.stack.clone]
+    [@input.to_a.clone, @output.to_a.clone, @ops.to_a.clone]
   end
 
   def next

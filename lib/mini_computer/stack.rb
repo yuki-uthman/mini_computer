@@ -5,51 +5,56 @@ require "tty-table"
 class StackEmptyError < StandardError
 end
 
+# Simple stack implementation
 class Stack
-  attr_reader :header, :stack
+  attr_accessor :header, :data
 
-  def initialize(header: "Stack", stack: [])
+  def initialize(header: "Stack", with: [])
     @header = header
-    @stack = stack
+    @data = with
   end
 
   def ==(other)
-    @stack == other
+    @data == other
   end
 
   def push(data)
-    @stack.push data
+    @data.push data
   end
 
   def pop
-    raise StackEmptyError if @stack.empty?
+    raise StackEmptyError if @data.empty?
 
-    @stack.pop
+    @data.pop
   end
 
-  def set(stack)
-    @stack = stack
+  def set=(data)
+    @data = data
+  end
+
+  def clear
+    @data = []
   end
 
   def peek
-    @stack.last
+    @data.last
   end
 
   def size
-    @stack.size
+    @data.size
   end
 
   def empty?
-    @stack.empty?
+    @data.empty?
   end
 
   def to_a
-    @stack
+    @data.clone
   end
 
   def view
     formatted = []
-    @stack.reverse_each do |value|
+    @data.reverse_each do |value|
       formatted << [value]
     end
     table = TTY::Table.new [header], formatted

@@ -2,8 +2,10 @@
 
 require "tty-table"
 
+# This class makes it easier to render stacks
+# next to each other
 class StackTable
-  attr_reader :stacks, :headers
+  attr_reader :stacks
 
   def initialize
     @headers = []
@@ -11,19 +13,17 @@ class StackTable
   end
 
   def ==(other)
-    @headers == other.headers && @stacks == other.stacks
+    @stacks == other.stacks
   end
 
-  def add(stacks)
+  def add(*stacks)
     stacks.each do |stack|
-      @headers << stack.header
-      @stacks << stack.to_a
+      @stacks << stack
     end
   end
 
   def render
-    table = TTY::Table.new(header: @headers)
-    # max_stack = @stacks.max_by(&:size)
+    table = TTY::Table.new(header: headers)
     rows.each do |row|
       table << row
     end
@@ -38,10 +38,18 @@ class StackTable
     (max_size - 1).downto(0) do |index|
       row = []
       @stacks.each do |stack|
-        row << stack[index]
+        row << stack.to_a[index]
       end
       rows << row
     end
     rows
+  end
+
+  def headers
+    to_result = []
+    @stacks.each do |stack|
+      to_result << stack.header
+    end
+    to_result
   end
 end

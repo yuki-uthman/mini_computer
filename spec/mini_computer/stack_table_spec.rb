@@ -1,36 +1,45 @@
 require_relative "../../lib/mini_computer/stack"
 require_relative "../../lib/mini_computer/stack_table"
 
-RSpec.describe "StackTable class" do
-  before do
-    @table = StackTable.new
-  end
+RSpec.describe StackTable do
+  let(:empty_table) { described_class.new }
+  let(:numbers) { Stack.new with: [1, 2, 3] }
+  let(:letters) { Stack.new with: %(a b c) }
 
   describe "#add" do
-    it "accepts array of stacks" do
-      infix = Stack.new header: "Infix", stack: [3, 8, 1, 5, 6]
-      ops    = Stack.new header: "Ops",    stack: ["+", "*"]
-      output = Stack.new header: "Output", stack: [30]
-      expected = StackTable.new
-      expected.add [infix]
-      expected.add [ops]
-      expected.add [output]
+    context "when there is no existing stack" do
+      it "adds to the empty table" do
+        empty_table.add numbers
+        expect(empty_table.stacks).to eq [numbers]
+      end
+    end
 
-      actual = StackTable.new
-      actual.add [infix, ops, output]
-      expect(actual).to eq expected
+    context "when there an element in the table" do
+      it "adds the new stack at the end" do
+        empty_table.add numbers
+        empty_table.add letters
+
+        expect(empty_table.stacks).to eq [numbers, letters]
+      end
+
+      context "when given multiple args" do
+        it "is same as adding one by one" do
+          empty_table.add numbers, letters
+
+          expected = described_class.new
+          expected.add numbers
+          expected.add letters
+
+          expect(empty_table).to eq expected
+        end
+      end
     end
   end
 
   describe "#render" do
-    context "given only one stack" do
+    context "when only one stack" do
       it "render one column" do
-        stack = Stack.new
-        stack.push 1
-        stack.push 2
-        stack.push 3
-        @table.add [stack]
-        actual = @table.render
+        empty_table.add numbers
         expected = <<~OUTPUT.rstrip
           ┌───────┐
           │ Stack │
@@ -40,21 +49,17 @@ RSpec.describe "StackTable class" do
           │   1   │
           └───────┘
         OUTPUT
-        expect(actual).to eq expected
+        expect(empty_table.render).to eq expected
       end
     end
 
-    context "given more than one stack" do
-      it "can render columns side by side" do
-        infix  = Stack.new header: "Infix",  stack: [3, 8, 1, 5, 6]
-        ops    = Stack.new header: "Ops",    stack: ["+", "*"]
-        output = Stack.new header: "Output", stack: [30]
-        # @table.add [infix]
-        # @table.add [ops]
-        # @table.add [output]
+    context "when there are more than one stack" do
+      it "renders columns side by side" do
+        infix = Stack.new header: "Infix", with: [3, 8, 1, 5, 6]
+        ops = Stack.new header: "Ops", with: ["+", "*"]
+        output = Stack.new header: "Output", with: [30]
 
-        @table.add [infix, ops, output]
-        actual = @table.render
+        empty_table.add infix, ops, output
         expected = <<~OUTPUT.rstrip
           ┌───────┬─────┬────────┐
           │ Infix │ Ops │ Output │
@@ -66,8 +71,8 @@ RSpec.describe "StackTable class" do
           │   3   │  +  │   30   │
           └───────┴─────┴────────┘
         OUTPUT
-        expect(actual).to eq expected
+        expect(empty_table.render).to eq expected
       end
-    end # context
-  end # describe #render
-end # RSpec
+    end
+  end
+end
