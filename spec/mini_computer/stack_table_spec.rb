@@ -21,17 +21,17 @@ RSpec.describe StackTable do
 
         expect(empty_table.stacks).to eq [numbers, letters]
       end
+    end
 
-      context "when given multiple args" do
-        it "is same as adding one by one" do
-          empty_table.add numbers, letters
+    context "when given multiple args" do
+      it "is same as adding one by one" do
+        empty_table.add numbers, letters
 
-          expected = described_class.new
-          expected.add numbers
-          expected.add letters
+        expected = described_class.new
+        expected.add numbers
+        expected.add letters
 
-          expect(empty_table).to eq expected
-        end
+        expect(empty_table).to eq expected
       end
     end
   end

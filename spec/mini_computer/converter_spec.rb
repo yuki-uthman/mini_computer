@@ -101,6 +101,22 @@ RSpec.describe Converter do
     context "when there are previous states" do
       it "restores the previous state" do
         converter.next
+        expect(converter.state).to eq [[1, 2], [3], []]
+
+        converter.back
+        expect(converter.state).to eq [[1, 2, 3], [], []]
+      end
+
+      it "can go back until the beginning" do
+        converter.next while converter.next
+        expect(converter.output).to eq [3, 2, 1]
+
+        converter.back
+        expect(converter.state).to eq [[1], [3, 2], []]
+
+        converter.back
+        expect(converter.state).to eq [[1, 2], [3], []]
+
         converter.back
         expect(converter.state).to eq [[1, 2, 3], [], []]
       end

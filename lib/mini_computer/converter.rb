@@ -5,7 +5,7 @@ require_relative "operator"
 
 # This class converts infix to postfix one step at a time
 class Converter
-  attr_reader :input, :output, :ops
+  attr_reader :input, :output, :ops, :history
 
   def initialize(input = [])
     @input = Stack.new header: "Input", with: input
